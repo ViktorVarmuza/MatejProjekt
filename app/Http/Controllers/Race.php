@@ -22,6 +22,5 @@ class Race extends Controller
         return view('home', compact('data'));
     }
 
-
     
 }
