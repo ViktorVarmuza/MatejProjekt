@@ -9,19 +9,21 @@ class Race extends Controller
 {   
 
     protected $raceModel;
+    protected $perPage;
     public function  __construct()
     {
         $this->raceModel = new RaceModel();
+        $this->perPage = config('pagination.per_page');
     }
 
 
     public function show()
     {
-        $data = $this->raceModel->all();
+        $data = $this->raceModel->pagination($this->perPage);
         
         return view('home', compact('data'));
     }
 
 
-    
+
 }
