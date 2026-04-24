@@ -1,0 +1,2 @@
+start serveru:    php artisan serve
+start vite serveru: npm run dev
