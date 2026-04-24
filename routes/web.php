@@ -16,3 +16,5 @@ use App\Http\Controllers\Race;
 
 
 Route::get('/', [Race::class, 'show']);
+
+

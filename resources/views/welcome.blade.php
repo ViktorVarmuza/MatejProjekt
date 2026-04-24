@@ -14,7 +14,6 @@
     <div class="p-10">
         <h1 class="text-3xl font-bold mb-5">Test Flowbite</h1>
 
-        <!-- jednoduché tlačítko -->
         <button class="bg-blue-500 text-white px-4 py-2 rounded">
             Klikni
         </button>
