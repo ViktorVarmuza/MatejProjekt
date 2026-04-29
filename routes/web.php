@@ -15,6 +15,6 @@ use App\Http\Controllers\Race;
 
 
 
-Route::get('/', [Race::class, 'show'])->name('race');
+Route::get('/', [Race::class, 'show'])->name('home');
 
-
+Route::get('/race/{id}', [Race::class, 'detail'])->name('race');
