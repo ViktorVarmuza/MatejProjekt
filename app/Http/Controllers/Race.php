@@ -19,15 +19,10 @@ class Race extends Controller
 
     public function show()
     {
-        $data = $this->raceModel->pagination($this->perPage);
+        $data = $this->raceModel->paginate($this->perPage);
         
         return view('home', compact('data'));
     }
 
-<<<<<<< HEAD
 
-
-=======
-    
->>>>>>> fc22ba0af7731ab4e9b472a8248de095511b2492
 }
