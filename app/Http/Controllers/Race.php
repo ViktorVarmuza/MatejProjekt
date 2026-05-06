@@ -8,18 +8,18 @@ use App\Models\RaceModel;
 class Race extends Controller
 {   
 
-    protected $raceModel;
+
     protected $perPage;
     public function  __construct()
     {
-        $this->raceModel = new RaceModel();
+
         $this->perPage = config('pagination.per_page');
     }
 
 
     public function show()
     {
-        $data = $this->raceModel->paginate($this->perPage);
+        $data = RaceModel::paginate($this->perPage);
         
         return view('home', compact('data'));
     }
