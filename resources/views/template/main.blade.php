@@ -9,7 +9,8 @@
 
 </head>
 
-<body class="bg-gray-100">
+<body class="p-10 bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen">
+    
 
 
     <div class="content">
