@@ -14,12 +14,15 @@
 
         <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 w-full">
 
-            @if($race->logo)
             <div class="bg-gray-50 flex justify-center items-center h-40">
-                <img src="{{ asset('logos/' . $race->logo) }}"
+
+                <img
+                    src="{{ $race->logo
+            ? asset('logos/' . $race->logo)
+            : asset('logos/default-logo.png') }}"
                     class="max-h-24 object-contain">
+
             </div>
-            @endif
 
             <div class="p-5">
 
@@ -32,7 +35,7 @@
                 </p>
 
                 <p class="text-sm mt-2">
-                    🌍 {{ $race->country_name }}
+                    🌍 {{ $race->country }}
                 </p>
 
                 <p class="text-sm mt-2">
