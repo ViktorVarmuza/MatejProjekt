@@ -6,7 +6,7 @@
     <title>Laravel + Tailwind + Flowbite</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+   "
 </head>
 
 <body class="p-10 bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen">

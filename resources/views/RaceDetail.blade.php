@@ -18,8 +18,8 @@
 
                 <img
                     src="{{ $race->logo
-            ? asset('logos/' . $race->logo)
-            : asset('logos/default-logo.png') }}"
+        ? asset('logos/' . $race->logo)
+        : asset('vtipy/vtip' . random_int(1, 11) . '.png') }}"
                     class="max-h-24 object-contain">
 
             </div>
@@ -31,11 +31,12 @@
                 </h2>
 
                 <p class="text-sm text-gray-500 mt-1">
-                    {{ $race->category ?? 'Neznámá kategorie' }}
+                    {{ $race->uci_tour_type ?? 'Neznámá kategorie' }}
                 </p>
 
-                <p class="text-sm mt-2">
-                    🌍 {{ $race->country }}
+                <p class="text-sm mt-2 flex items-center gap-2">
+                    <span class="fi fi-{{ strtolower($race->country) }}"></span>
+                    {{ $race->country_name }}
                 </p>
 
                 <p class="text-sm mt-2">
@@ -49,9 +50,6 @@
                     @endif
                 </p>
 
-                <p class="text-sm mt-2">
-                    🚴 {{ $race->stages }} etap
-                </p>
 
             </div>
 

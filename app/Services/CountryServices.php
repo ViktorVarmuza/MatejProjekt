@@ -4,7 +4,7 @@ namespace App\Services;
 
 use League\ISO3166\ISO3166;
 
-class CountryService
+class CountryServices
 {
     protected $iso3166;
     public function __construct(ISO3166 $iso3166)
