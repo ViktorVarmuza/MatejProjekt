@@ -30,7 +30,8 @@
                     {{ $race->real_name }} ({{ $race->year }})
                 </h2>
 
-                <p class="text-sm text-gray-500 mt-1">
+                <p class="text-sm  mt-1">
+                    Kategorie:
                     {{ $race->uci_tour_type ?? 'Neznámá kategorie' }}
                 </p>
 
@@ -39,16 +40,27 @@
                     {{ $race->country_name }}
                 </p>
 
+                <p class="text-sm  mt-1">
+                    Etapy: {{ $race->stages_count ?? 'Neznámý počet' }}
+                </p>
+
+
                 <p class="text-sm mt-2">
                     📅
-                    @if($race->date_from == $race->date_to)
-                    {{ \Carbon\Carbon::parse($race->date_from)->format('d. m. Y') }}
+                    @if(\Carbon\Carbon::parse($race->start_date)->isSameDay($race->end_date))
+                    {{ \Carbon\Carbon::parse($race->start_date)->format('d. m. Y') }}
                     @else
-                    {{ \Carbon\Carbon::parse($race->date_from)->format('d. m.') }}
+                    {{ \Carbon\Carbon::parse($race->start_date)->format('d. m.') }}
                     –
-                    {{ \Carbon\Carbon::parse($race->date_to)->format('d. m. Y') }}
+                    {{ \Carbon\Carbon::parse($race->end_date)->format('d. m. Y') }}
                     @endif
                 </p>
+
+                <a href="{{ route('etapy') }}?id={{ $race->YearId}}">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600 transition duration-300 w-full">
+                        Zobrazit Etapy 
+                    </button>
+                </a>
 
 
             </div>

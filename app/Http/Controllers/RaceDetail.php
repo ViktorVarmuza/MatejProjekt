@@ -7,6 +7,7 @@ use App\Models\RaceModel;
 use App\Services\CountryServices;
 
 
+
 class RaceDetail extends Controller
 {
 
@@ -15,9 +16,10 @@ class RaceDetail extends Controller
         $id = $request->query('id');
 
         $data = RaceModel::where('race.id', $id)
-            ->select('race.*','race_year.*' ,  'uci_tour_type.name as uci_tour_type')
+            ->select('race.*', 'race_year.*',  'uci_tour_type.name as uci_tour_type', 'race_year.id as YearId')
             ->join('race_year', 'race.id', '=', 'race_year.id_race')
             ->join('uci_tour_type', 'race_year.uci_tour', '=', 'uci_tour_type.id')
+            ->withCount('stages')
             ->get();
 
 
@@ -31,4 +33,6 @@ class RaceDetail extends Controller
 
         return view('RaceDetail', compact('data'));
     }
+
+   
 }
