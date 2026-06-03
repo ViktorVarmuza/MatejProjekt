@@ -9,18 +9,13 @@
 
 </head>
 
-<body class="p-10 bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen">
-    
+<body class="bg-gradient-to-br from-gray-100 to-blue-100 min-h-screen">
 
+    @include('template.navbar')
 
-    <div class="content">
+    <div class="content p-10">
         @yield('content')
     </div>
-
-
-
-
-
 
 </body>
 
