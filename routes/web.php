@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Etapy;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Race;
 use App\Http\Controllers\RaceDetail;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,4 +20,6 @@ use App\Http\Controllers\RaceDetail;
 
 Route::get('/', [Race::class, 'show'])->name('home');
 
-Route::get('/race/{id}', [RaceDetail::class, 'show'])->name('race');
+Route::get('/race', [RaceDetail::class, 'show'])->name('race');
+
+Route::get('/etapy', [Etapy::class, 'show'])->name('etapy');
