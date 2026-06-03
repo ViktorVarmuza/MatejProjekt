@@ -18,8 +18,8 @@
 
                 <img
                     src="{{ $race->logo
-        ? asset('logos/' . $race->logo)
-        : asset('vtipy/vtip' . random_int(1, 11) . '.png') }}"
+                     ? asset('logos/' . $race->logo)
+                    : asset('vtipy/vtip' . random_int(1, 14) . '.png') }}"
                     class="max-h-24 object-contain">
 
             </div>
