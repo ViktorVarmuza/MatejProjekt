@@ -10,8 +10,6 @@ class Etapy extends Controller
     {
         $id = $request->query('id');
 
-        // Zde můžete načíst data o etapách pro dané ID závodu
-        // Například:
-        // $stages
+        return view('etapy',);
     }
 }
