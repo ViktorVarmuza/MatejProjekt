@@ -5,13 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\RaceYear;
-
-class Stages extends Model
+class uci_tour_type extends Model
 {
     use HasFactory;
-    protected $table = 'stage';
-
-
-
+    protected $table = 'uci_tour_type';
 }

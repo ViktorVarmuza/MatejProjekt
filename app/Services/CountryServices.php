@@ -17,4 +17,8 @@ class CountryServices
         $country = (new ISO3166())->alpha2($countryCode);
         return $country;        
     }
+    public function getAllCountries()
+    {
+        return (new ISO3166())->all();
+    }
 }

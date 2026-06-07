@@ -12,8 +12,4 @@ class RaceModel extends Model
     protected $table = 'race';
 
 
-    public function stages()
-    {
-        return $this->hasMany(Stages::class, 'id_race_year');
-    }
 }

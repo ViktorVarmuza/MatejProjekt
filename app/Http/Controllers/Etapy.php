@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Stages;
+
 class Etapy extends Controller
 {
-    public function show(Request $request)
+    public function show($id)
     {
-        $id = $request->query('id');
+    
+        $data = Stages::where('id_race_year', $id)
+            ->select('stage.*', 'parcour_type.name as parcour_type_name')
+            ->join('parcour_type', 'stage.parcour_type', '=', 'parcour_type.id')
+            ->get();
 
-        return view('etapy',);
+ 
+        return view('etapy', compact('data'));
     }
 }

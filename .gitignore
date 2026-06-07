@@ -18,5 +18,7 @@ yarn-error.log
 /.idea
 /.vscode
 /public/logos
+/public/stages
+
 
 
