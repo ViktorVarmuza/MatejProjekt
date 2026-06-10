@@ -9,7 +9,7 @@ use App\Models\Stages;
 class RaceModel extends Model
 {
     use HasFactory;
-    protected $table = 'race';
+    protected $table = 'race'; // urceni jak se jmenuje tabulka
 
 
 }

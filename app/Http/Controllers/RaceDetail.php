@@ -19,35 +19,41 @@ class RaceDetail extends Controller
 
 
         $data = RaceYear::where('id_race', $id)
-            ->select('race.*', 'race_year.*',  'uci_tour_type.name as uci_tour_type', 'race_year.id as YearId', 'race.id as raceId')
-            ->join('race', 'race.id', '=', 'race_year.id_race')
-            ->join('uci_tour_type', 'race_year.uci_tour', '=', 'uci_tour_type.id')
-            ->withCount('stages')
+            ->select('race.*', 'race_year.*',  'uci_tour_type.name as uci_tour_type', 'race_year.id as YearId', 'race.id as raceId') // co se selectne z dotazu
+            ->join('race', 'race.id', '=', 'race_year.id_race') // join tabulky race
+            ->join('uci_tour_type', 'race_year.uci_tour', '=', 'uci_tour_type.id')  // join tabulky uci_tour_type
+            ->withCount('stages')   // spocita kolik je etaap v danem rocniku
             ->get();
 
+            
 
         $uciTourTypes = uci_tour_type::all();
 
         $modalData = [
             "countries" => $countryServices->getAllCountries(),
             "uciTourTypes" => $uciTourTypes
-        ];
+        ];  
+        //modal data
 
         foreach ($data as $race) {
             $country = $countryServices->getCountry($race->country);
             $race->country_name = $country['name'];
         }
 
+        // nastavuju countryName do dat
 
 
         return view('RaceDetail', compact('data', 'modalData'));
     }
 
     public function destroy($id)
-    {
+    {   
+
+        //vymazani dat
         $race = RaceYear::findOrFail($id);
         $race->delete();
-
+        
+        //redirect zpet s hlaskou o uspesnem smazani
         return redirect()->back()->with('success', 'Ročník závodu byl úspěšně smazán.');
     }
 
@@ -65,7 +71,7 @@ class RaceDetail extends Controller
             'id_race' => 'required|integer|',
         ]);
 
-        // Sem si pro jistotu dotáhneme hlavní závod, ke kterému ročník patří
+        // validace dat
 
 
 
@@ -78,6 +84,8 @@ class RaceDetail extends Controller
             // Natvrdo přesune soubor do tvé složky public/logo/
             $request->file('logo')->move(public_path('logos'), $filename);
         }
+
+        // nahrani loga do slozky public/logos a vygenerovani unikatniho nazvu pro logo
 
 
 

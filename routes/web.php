@@ -16,7 +16,13 @@ use App\Http\Controllers\RaceDetail;
 |
 */
 
+/*
+get - ziskani dat
+post - vytvoreni dat
+put - uprava dat
+delete - smazani dat
 
+*/
 
 Route::get('/', [Race::class, 'show'])
     ->name('home');
