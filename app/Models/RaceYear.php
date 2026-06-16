@@ -25,9 +25,11 @@ class RaceYear extends Model
         'logo',
     ];
 
+    //co muzu vlozit do databaze, co je povoleno, aby se nestalo, ze vlozim neco, co tam nechci
 
     public function stages() //pocita kolik je stage(etapy)
     {
         return $this->hasMany(Stages::class, 'id_race_year');
     }
+    //relace mezi tabulkami, jeden závod může mít více etap, takže použijeme hasMany
 }
