@@ -16,6 +16,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.2.0",
         "flag-icons": "^7.5.0",
-        "flowbite": "^4.0.1"
+        "flowbite": "^4.0.1",
+        "tinymce": "^8.6.0"
     }
 }

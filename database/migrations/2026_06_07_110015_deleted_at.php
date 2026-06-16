@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::table('race_year', function (Blueprint $table) {
             $table->softDeletes(); // přidá deleted_at (nullable timestamp)
             $table->timestamps();
+            $table->text('description')->nullable();
         });
     }
 

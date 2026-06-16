@@ -33,7 +33,7 @@ $url .= '?' . http_build_query($querry);
                 class="p-6 space-y-6">
 
                 @csrf
-                @method('PUT') 
+                @method('PUT')
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
@@ -137,7 +137,6 @@ $url .= '?' . http_build_query($querry);
 
                             {{-- Preview Box --}}
                             <div id="previewContainer_{{ $id }}" class="flex-shrink-0 w-24 h-24 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden relative">
-                                {{-- Pokud stávající logo existuje, rovnou ho ukážeme v náhledu --}}
                                 @if($race->logo)
                                 <img id="logoPreview_{{ $id }}" src="{{ asset('logos/' . $race->logo) }}" class="w-full h-full object-contain p-1" alt="Logo">
                                 <div id="previewPlaceholder_{{ $id }}" class="text-gray-300 flex flex-col items-center hidden">
@@ -166,6 +165,14 @@ $url .= '?' . http_build_query($querry);
                         </div>
                     </div>
 
+                    {{-- DESCRIPTION TEXTAREA (WITH TINYMCE) --}}
+                    <div class="sm:col-span-2" style="margin-bottom: 15px;">
+                        <label for="textarea_{{ $id }}" class="block mb-2 text-sm font-medium text-gray-900">Popis ročníku</label>
+                        <textarea id="textarea_{{ $id }}" name="description" rows="4"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 transition-shadow focus:shadow-sm"
+                            placeholder="Zde napište podrobný popis ročníku...">{!! $race->description ?? '' !!}</textarea>
+                    </div>
+
                 </div>
 
                 {{-- FOOTER --}}
@@ -188,58 +195,134 @@ $url .= '?' . http_build_query($querry);
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Používáme unikátní ID pro každý vygenerovaný řádek v cyklu
+    (function() {
         const id = "{{ $id }}";
-        const startInput = document.getElementById(`start_date_${id}`);
-        const endInput = document.getElementById(`end_date_${id}`);
-        const yearInput = document.getElementById(`year_${id}`);
+        const textareaId = `textarea_${id}`;
 
-        const logoInput = document.getElementById(`logoInput_${id}`);
-        const logoPreview = document.getElementById(`logoPreview_${id}`);
-        const previewPlaceholder = document.getElementById(`previewPlaceholder_${id}`);
+        function initRow() {
+            const startInput = document.getElementById(`start_date_${id}`);
+            const endInput = document.getElementById(`end_date_${id}`);
+            const yearInput = document.getElementById(`year_${id}`);
+            const logoInput = document.getElementById(`logoInput_${id}`);
+            const logoPreview = document.getElementById(`logoPreview_${id}`);
+            const previewPlaceholder = document.getElementById(`previewPlaceholder_${id}`);
+            const modalElement = document.getElementById(`edit-modal-${id}`);
 
-        // Náhled nově vybraného obrázku
-        if (logoInput) {
-            logoInput.addEventListener('change', function() {
-                const file = this.files[0];
-                if (file) {
+            // --- Náhled obrázku ---
+            if (logoInput) {
+                logoInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (!file) return;
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        logoPreview.src = e.target.result;
-                        logoPreview.classList.remove('hidden');
-                        previewPlaceholder.classList.add('hidden');
-                    }
+                        if (logoPreview) {
+                            logoPreview.src = e.target.result;
+                            logoPreview.classList.remove('hidden');
+                        }
+                        if (previewPlaceholder) previewPlaceholder.classList.add('hidden');
+                    };
                     reader.readAsDataURL(file);
+                });
+            }
+
+            // --- Datumy + automatický rok ---
+            function handleDateChange() {
+                const startVal = startInput.value;
+                const endVal = endInput.value;
+                if (startVal) {
+                    yearInput.value = startVal.split('-')[0];
+                    endInput.min = startVal;
+                    if (endVal && endVal < startVal) endInput.value = startVal;
+                } else {
+                    yearInput.value = '';
+                    endInput.min = '';
                 }
-            });
-        }
+            }
 
-        // Automatické zpracování datumu a zamykání rozmezí
-        function handleDateChange() {
-            const startVal = startInput.value;
-            const endVal = endInput.value;
+            if (startInput && endInput) {
+                startInput.addEventListener('change', handleDateChange);
+                endInput.addEventListener('change', handleDateChange);
+                handleDateChange();
+            }
 
-            if (startVal) {
-                const startYear = startVal.split('-')[0];
-                yearInput.value = startYear;
+            // --- TinyMCE Konfigurace (převzato z tvého zadání) ---
+            // Hledej v Blade šabloně toto místo a uprav ho:
+            const tinyConfig = {
+                height: 250,
+                menubar: false,
 
-                endInput.min = startVal;
+                // --- TYTO DVA ŘÁDKY VYŘEŠÍ ZOBRAZENÍ A BOLD PŘI SELF-HOSTED ---
+                skin: false,
+                content_css: false,
+                // -------------------------------------------------------------
 
-                if (endVal && endVal < startVal) {
-                    endInput.value = startVal;
+                plugins: 'lists link image charmap preview anchor searchreplace visualblocks code fullscreen table wordcount',
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+                language: 'cs',
+                license_key: 'gpl',
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        editor.save();
+                    });
                 }
-            } else {
-                yearInput.value = '';
-                endInput.min = '';
+            };
+
+            // Pomocná funkce pro bezpečné spuštění TinyMCE
+            function initTinyEditor() {
+                if (typeof tinymce !== 'undefined') {
+                    if (!tinymce.get(textareaId)) {
+                        tinymce.init({
+                            ...tinyConfig,
+                            selector: `#${textareaId}`
+                        });
+                    }
+                }
+            }
+
+            // Pomocná funkce pro zničení editoru (prevence duplicity při zavření)
+            function destroyTinyEditor() {
+                if (typeof tinymce !== 'undefined') {
+                    const instance = tinymce.get(textareaId);
+                    if (instance) {
+                        instance.destroy();
+                    }
+                }
+            }
+
+            // --- Flowbite / Custom Eventy pro otevírání modalu ---
+            // Poněvadž Flowbite přepíná třídu .hidden, vytvoříme MutationObserver,
+            // který bezpečně pozná, kdy se modal opravdu zviditelnil.
+            if (modalElement) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'class') {
+                            const isHidden = modalElement.classList.contains('hidden');
+                            if (!isHidden) {
+                                // Modal se otevřel -> Inicializujeme TinyMCE s drobným zpožděním
+                                setTimeout(initTinyEditor, 100);
+                            } else {
+                                // Modal se zavřel -> Zničíme instanci
+                                destroyTinyEditor();
+                            }
+                        }
+                    });
+                });
+
+                observer.observe(modalElement, {
+                    attributes: true
+                });
+
+                // Pojistka pro případ, že modal byl načten rovnou jako otevřený
+                if (!modalElement.classList.contains('hidden')) {
+                    setTimeout(initTinyEditor, 100);
+                }
             }
         }
 
-        if (startInput && endInput) {
-            startInput.addEventListener('change', handleDateChange);
-            endInput.addEventListener('change', handleDateChange);
-            // Spustíme hned na začátku, aby se správně uzamklo minimální koncové datum podle stávající hodnoty
-            handleDateChange();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRow);
+        } else {
+            initRow();
         }
-    });
+    })();
 </script>

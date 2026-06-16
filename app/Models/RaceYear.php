@@ -22,11 +22,11 @@ class RaceYear extends Model
         'sex',
         'uci_tour',
         'country',
-        'logo', // zde bude uložená cesta k souboru
+        'logo',
     ];
 
 
-    public function stages()
+    public function stages() //pocita kolik je stage(etapy)
     {
         return $this->hasMany(Stages::class, 'id_race_year');
     }

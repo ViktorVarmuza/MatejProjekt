@@ -1,13 +1,10 @@
-
-
 @php
     $url = route($route);
 
     if (!empty($querry)) {
-    $url .= '?' . http_build_query($querry);
+        $url .= '?' . http_build_query($querry);
     }
 @endphp
-
 
 <div id="add-modal" tabindex="-1" aria-hidden="true"
     class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto h-[calc(100%-1rem)] max-h-full bg-gray-900/50 backdrop-blur-sm">
@@ -156,6 +153,12 @@
                         </div>
                     </div>
 
+                    {{-- --- PŘIDANÉ DESCRIPTION (TINYMCE EDITOR) --- --}}
+                    <div class="sm:col-span-2">
+                        <label for="add_description" class="block mb-1.5 text-sm font-medium text-gray-700">Popis ročníku</label>
+                        <textarea name="description" id="add_description" class="w-full"></textarea>
+                    </div>
+
                 </div>
 
                 {{-- FOOTER --}}
@@ -223,5 +226,27 @@
 
         startInput.addEventListener('change', handleDateChange);
         endInput.addEventListener('change', handleDateChange);
+
+        // --- INICIALIZACE TINYMCE PRO ADD MODAL ---
+        if (typeof window.tinymce !== 'undefined') {
+            window.tinymce.init({
+                selector: '#add_description',
+                height: 250,
+                menubar: false,
+                skin: false,
+                content_css: false,
+                // event_root opravuje problém s Flowbite modalem (umožní klikat do inputů v TinyMCE)
+                event_root: '#add-modal', 
+                plugins: 'lists link image charmap preview anchor searchreplace visualblocks code fullscreen table wordcount',
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+                language: 'cs',
+                license_key: 'gpl',
+                setup: function (editor) {
+                    editor.on('change', function () {
+                        editor.save(); // Automaticky propíše obsah z editoru do skryté textarey před odesláním formuláře
+                    });
+                }
+            });
+        }
     });
 </script>
