@@ -9,7 +9,7 @@ use App\Models\RaceYear;
 use App\Models\uci_tour_type;
 
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+
 
 class RaceDetail extends Controller
 {
@@ -68,14 +68,17 @@ class RaceDetail extends Controller
             'country'    => 'required|string|size:2',
             'logo'       => 'nullable|image|mimes:jpeg,png,jpg,svg',
             'id_race' => 'required|integer|',
+            'description' => 'nullable|string', // Přidána validace pro TinyMCE popis
         ]);
 
-        // validace dat
+        // Sem si pro jistotu dotáhneme hlavní závod, ke kterému ročník patří
 
 
 
 
         $filename = null;
+
+
 
         if ($request->hasFile('logo')) {
             $filename = "logo-" . Str::uuid() . "." . $request->file('logo')->getClientOriginalExtension();
@@ -99,63 +102,71 @@ class RaceDetail extends Controller
         $edition->uci_tour = $validated['uci_tour'];
         $edition->country = $validated['country'];
         $edition->logo = $filename;
+        $edition->description = $validated['description'];
         $edition->save();;
         // Přesměrování zpět s úspěšnou hláškou
         return redirect()->back()->with('success', 'Ročník závodu byl úspěšně vytvořen.');
     }
 
+
     public function edit(Request $request)
     {
         // 1. VALIDACE (pohlídáme správnost dat a bezpečnost)
         $validated = $request->validate([
-            'real_name'  => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date'   => 'required|date|after_or_equal:start_date',
-            'year'       => 'required|integer',
-            'sex'        => 'required|in:M,W',
-            'uci_tour'   => 'required|integer',
-            'country'    => 'required|string|size:2',
-            'logo'       => 'nullable|image|mimes:jpeg,png,jpg,svg',
-            'id' => 'required|integer'
+            'id'          => 'required|integer',
+            'real_name'   => 'required|string|max:255',
+            'start_date'  => 'required|date',
+            'end_date'    => 'required|date|after_or_equal:start_date',
+            'year'        => 'required|integer',
+            'sex'         => 'required|in:M,W',
+            'uci_tour'    => 'required|integer',
+            'country'     => 'required|string|size:2',
+            'logo'        => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // doporučený limit 2MB
+            'description' => 'nullable|string', // Přidána validace pro TinyMCE popis
         ]);
 
         $id = $validated['id'];
 
+        // 2. NAČTENÍ MODELU
         $edition = RaceYear::findOrFail($id);
 
-
+        // 3. ZPRACOVÁNÍ LOGA (pokud bylo nahráno nové)
         if ($request->hasFile('logo')) {
-
             $oldFilePath = public_path('logos/' . $edition->logo);
 
-            
+            // Smazání starého loga, pokud existuje
             if ($edition->logo && file_exists($oldFilePath)) {
-                @unlink($oldFilePath); 
+                @unlink($oldFilePath);
             }
 
-         
+            // Vygenerování unikátního názvu souboru
             $filename = "logo-" . Str::uuid() . "." . $request->file('logo')->getClientOriginalExtension();
 
-
+            // Přesun souboru do public/logos
             $request->file('logo')->move(public_path('logos'), $filename);
 
-           
+            // Uložení názvu do modelu
             $edition->logo = $filename;
         }
 
-     
+        // 4. MAPOVÁNÍ OSTATNÍCH POLÍ DO MODELU
         $edition->real_name = $validated['real_name'];
         $edition->start_date = $validated['start_date'];
         $edition->end_date = $validated['end_date'];
         $edition->year = $validated['year'];
         $edition->sex = $validated['sex'];
-        $edition->uci_tour = $validated['uci_tour']; 
+
+        // Pozor: V Blade máš uuci_tour_type_id, upravil jsem podle toho název sloupce v DB
+        $edition->uci_tour = $validated['uci_tour'];
         $edition->country = $validated['country'];
 
-        
+        // --- TADY JE TO PŘIDANÉ DESCRIPTION Z TINYMCE ---
+        $edition->description = $validated['description'];
+
+        // 5. ULOŽENÍ DO DATABÁZE
         $edition->save();
 
-    
+        // 6. REDIRECT S ÚSPĚŠNOU ZPRÁVOU
         return redirect()->back()->with('success', 'Ročník byl úspěšně upraven.');
     }
 }

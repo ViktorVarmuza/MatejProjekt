@@ -21,7 +21,7 @@
 
      
     </div>
-
+    
     {{-- SEZNAM ETAP --}}
     @foreach($data as $stage)
 

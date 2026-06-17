@@ -13,7 +13,6 @@ class Race extends Controller
 
     public function  __construct() 
     {
-
         $this->perPage = config('pagination.per_page');
     }
 
@@ -24,7 +23,7 @@ class Race extends Controller
 
         
         
-        return view('home', compact('data'));
+        return view('home', compact('data'));  //compact formatuje data
     }
 
     // compact $data = ['data' => $data]
