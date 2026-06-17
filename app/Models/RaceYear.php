@@ -24,6 +24,10 @@ class RaceYear extends Model
         'country',
         'logo',
     ];
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
     //co muzu vlozit do databaze, co je povoleno, aby se nestalo, ze vlozim neco, co tam nechci
 

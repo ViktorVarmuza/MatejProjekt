@@ -76,12 +76,13 @@
 
                     <p class="text-sm mt-2">
                         <i class="fa-solid fa-calendar text-gray-400 mr-1"></i>
-                        @if(\Carbon\Carbon::parse($race->start_date)->isSameDay($race->end_date))
-                        {{ \Carbon\Carbon::parse($race->start_date)->format('d. m. Y') }}
+
+                        @if($race->start_date->isSameDay($race->end_date))
+                        {{ $race->start_date->format('d. m. Y') }}
                         @else
-                        {{ \Carbon\Carbon::parse($race->start_date)->format('d. m.') }}
+                        {{ $race->start_date->format('d. m.') }}
                         –
-                        {{ \Carbon\Carbon::parse($race->end_date)->format('d. m. Y') }}
+                        {{ $race->end_date->format('d. m. Y') }}
                         @endif
                     </p>
 
