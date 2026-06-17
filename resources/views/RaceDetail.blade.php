@@ -33,7 +33,7 @@
             Přidat
         </button>
 
-        @include('template.modals.add', ['route' => 'race.create','id' => $data[0]->raceId, 'data' => $modalData, 'raceName' => $data[0]->default_name])
+        @include('template.modals.add', ['route' => 'race.create','id' => $data[0]->raceId, 'data' => $modalData, 'raceName' => $data[0]->default_name]) //načítá modal s daty
     </div>
 
     {{-- RACE GRID --}}
@@ -88,7 +88,7 @@
                     {{-- --- ZOBRAZENÍ POPISU Z TINYMCE --- --}}
                     @if(!empty($race->description))
                     <div class="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600 prose prose-sm max-w-none">
-                        {!! $race->description !!}
+                        {!! $race->description !!} // aby se nacitaly i styly a  ne jenom text
                     </div>
                     @endif
                 </div>
