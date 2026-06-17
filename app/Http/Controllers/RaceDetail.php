@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\Storage;
 class RaceDetail extends Controller
 {
 
-    public function show($id,   CountryServices $countryServices)
-    {
+    public function show($id,   CountryServices $countryServices) // CountryServices vytvori tridu
+    {   
 
 
         $data = RaceYear::where('id_race', $id)
             ->select('race.*', 'race_year.*',  'uci_tour_type.name as uci_tour_type', 'race_year.id as YearId', 'race.id as raceId') // co se selectne z dotazu
-            ->join('race', 'race.id', '=', 'race_year.id_race') // join tabulky race
-            ->join('uci_tour_type', 'race_year.uci_tour', '=', 'uci_tour_type.id')  // join tabulky uci_tour_type
-            ->withCount('stages')   // spocita kolik je etaap v danem rocniku
+            ->join('race', 'race.id', '=', 'race_year.id_race')
+            ->join('uci_tour_type', 'race_year.uci_tour', '=', 'uci_tour_type.id')
+            ->withCount('stages')
             ->get();
 
             
@@ -30,20 +30,20 @@ class RaceDetail extends Controller
         $uciTourTypes = uci_tour_type::all();
 
         $modalData = [
-            "countries" => $countryServices->getAllCountries(),
-            "uciTourTypes" => $uciTourTypes
+            "countries" => $countryServices->getAllCountries(), // všechny země uloží do countries
+            "uciTourTypes" => $uciTourTypes // všechny ucitypes do uciTourTypes
         ];  
         //modal data
 
-        foreach ($data as $race) {
-            $country = $countryServices->getCountry($race->country);
-            $race->country_name = $country['name'];
+        foreach ($data as $race) { // prochází každý závod v datech
+            $country = $countryServices->getCountry($race->country); // získá informace o zemi podle kódu země
+            $race->country_name = $country['name']; // nastaví název země do vlastnosti country_name závodu
         }
 
         // nastavuju countryName do dat
 
 
-        return view('RaceDetail', compact('data', 'modalData'));
+        return view('RaceDetail', compact('data', 'modalData')); // formatuje data
     }
 
     public function destroy($id)
@@ -53,7 +53,6 @@ class RaceDetail extends Controller
         $race = RaceYear::findOrFail($id);
         $race->delete();
         
-        //redirect zpet s hlaskou o uspesnem smazani
         return redirect()->back()->with('success', 'Ročník závodu byl úspěšně smazán.');
     }
 

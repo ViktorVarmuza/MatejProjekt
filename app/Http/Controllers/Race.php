@@ -9,16 +9,16 @@ class Race extends Controller
 {   
 
 
-    protected $perPage; // počet záznamů na stránku pro stránkování
+    protected $perPage; 
 
-    public function  __construct() // konstruktor 
+    public function  __construct() 
     {
 
         $this->perPage = config('pagination.per_page');
     }
 
 
-    public function show() // vypisuje všechny závody a zobrazuje je na stránce home.blade.php
+    public function show() 
     {
         $data = RaceModel::paginate($this->perPage);
 

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::table('race_year', function (Blueprint $table) {
             $table->softDeletes(); // přidá deleted_at (nullable timestamp)
             $table->timestamps();
+            $table->addColumn('description', 'text')->nullable(); // přidá sloupec description (text, nullable)
         });
     }
 
@@ -18,6 +19,8 @@ return new class extends Migration
     {
         Schema::table('race_year', function (Blueprint $table) {
             $table->dropSoftDeletes();
+            $table->dropColumn('description');
+            $table->dropTimestamps();
         });
     }
 };
